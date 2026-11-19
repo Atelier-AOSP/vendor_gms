@@ -74,7 +74,9 @@ def run_generate_overlays(src: str):
     dump_path = src_path if src_path.is_dir() else src_path.with_suffix('')
     framework_path = dump_path / 'system' / 'framework' / 'framework-res.apk'
     if not framework_path.is_file():
-        sys.exit(f'error: cannot generate overlays, {framework_path} not found')
+        # extract-utils deletes the dump of an archive unless told to keep it
+        hint = '' if src_path.is_dir() else ', extract with --keep-dump'
+        sys.exit(f'error: cannot generate overlays, {framework_path} not found{hint}')
     ret = subprocess.run(
         [
             str(GENERATE_OVERLAYS_PY),
